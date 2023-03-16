@@ -263,7 +263,7 @@ function Primeira_heuristica(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H
     return (Path,Ordem,Visita,UV,CPUtime,Horarios)
 end
 
-function TerceiraHeuristica(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin)
+function Segunda_heuristica(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin)
     #
     if tmin < maximum(T)
         tmax = tmin + 1
@@ -565,7 +565,7 @@ function Primeira_heuristica_compromisso(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,
     return (Path,Ordem,Visita,UV,CPUtime)
 end
 
-function TerceiraHeuristica_compromisso(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin,z10,z20,z11,z21)
+function SegundaHeuristica_compromisso(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin,z10,z20,z11,z21)
     #
     if tmin < maximum(T)
         tmax = tmin + 1
@@ -912,7 +912,7 @@ for λ in [1]
     tem=[]
     global No_por_periodo,No_por_ordem,Ordem_por_periodo,z10,z20, CPU, GAP
     for tmin in 1:2:maximum(T)
-        (Path,Ordem,Visita,Horas,LB,UB,Cputime2,Gap) = TerceiraHeuristica(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin)
+        (Path,Ordem,Visita,Horas,LB,UB,Cputime2,Gap) = SegundaHeuristica(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin)
         (No_por_periodo,No_por_ordem,Ordem_por_periodo) = No_por_periodo_e_ordem(Visita,Ordem,n,T)
         (z1,z2) = Valores_obj(T,No_por_periodo,Ordem_por_periodo,UV,Path,Ordem,P,Q,c)
         push!(g,Gap)
@@ -955,7 +955,7 @@ for λ ∈ [0.2,0.5,0.8]
     tem=[]
     global No_por_periodoC,No_por_ordemC,Ordem_por_periodoC,z1C,z2C,Horas
     for tmin in 1:2:maximum(T)
-        (Path,Ordem,Visita,Horas,Cputime2,Gap) = TerceiraHeuristica_compromisso(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin,Z10,Z20,Z11,Z21)
+        (Path,Ordem,Visita,Horas,Cputime2,Gap) = SegundaHeuristica_compromisso(TempoH,λ,a,b,c,d,e,P,Q,n_min,n_max,w0,atracoes,R,H,Path,Ordem,Visita,No_por_periodo,No_por_ordem,Ordem_por_periodo,tmin,Z10,Z20,Z11,Z21)
         (No_por_periodo,No_por_ordem,Ordem_por_periodo) = No_por_periodo_e_ordem(Visita,Ordem,n,T)
         push!(g,Gap)
         push!(tem,Cputime2)
@@ -1029,7 +1029,6 @@ optimize!(modelo)
 #------------------------------------------------------------------
 
 
-
 @printf("---------------------------------------------\n")
 caminho=[]
 for k=1:n
@@ -1055,54 +1054,3 @@ for i in 1:n
     end
 end
 @printf("---------------------------------------------\n")
-
-#=
-#Dia 1 -> 1,29,33,16,9,5,4,39
-#Dia 2 -> 30,6,32,28,21,31,40
-#Dia 3 -> 18,22,11,23,33,7,8,38
-#Dia 4 -> 35,12,2,15,3,41
-#Dia 5 -> 14,10,13,33,25,1
-
-Pmax = [0 9.0	9.0	10.0	10.0	10.0	2.4	2.4	4.0	7.0	7.0	5.0	8.0	8.0	5.6	5.0	5.0	3.0	4.0	2.4	4.8	4.0	4.8	3.2	4.0	1.6	1.2	2.5	3.6	3.0	3.0
-]
-
-100*mean([P[2,29]/Pmax[29],P[4,16]/Pmax[16],P[5,9]/Pmax[9],P[6,5]/Pmax[5],P[7,4]/Pmax[4],P[9,30]/Pmax[30],
-P[10,6]/Pmax[6],P[12,28]/Pmax[28],P[13,21]/Pmax[21],P[14,31]/Pmax[31],P[16,18]/Pmax[18],P[17,22]/Pmax[22],P[18,11]/Pmax[11],
-P[19,23]/Pmax[23],P[21,7]/Pmax[7],P[22,8]/Pmax[8],P[25,12]/Pmax[12],P[26,2]/Pmax[2],P[27,15]/Pmax[15],
-P[28,3]/Pmax[3],P[29,14]/Pmax[14],P[30,10]/Pmax[10],P[31,13]/Pmax[13],P[33,25]/Pmax[25] ])
-
-
-#Dia 1 -> 1,28,25,21,31,33,42
-#Dia 2 -> 8,33,29,7,42
-#Dia 3 -> 22,11,23,33,40
-#Dia 4 -> 16,34,9,5,41
-#Dia 5 -> 26,4,30,32,1
-
-100*mean([P[2,28]/Pmax[28],P[3,25]/Pmax[25],P[4,21]/Pmax[21],P[5,31]/Pmax[31],P[7,8]/Pmax[8],
-P[10,29]/Pmax[29],P[11,7]/Pmax[7],P[14,22]/Pmax[22],P[15,11]/Pmax[11],P[16,23]/Pmax[23],P[19,16]/Pmax[16],
-P[21,9]/Pmax[9],P[22,5]/Pmax[5],P[24,26]/Pmax[26],P[25,4]/Pmax[4],P[26,30]/Pmax[30]])
-
-#Dia 1 -> 1,29,33,16,9,5,4,39
-#Dia 2 -> 30,6,32,28,21,31,40
-#Dia 3 -> 30,6,32,28,21,31,40
-#Dia 4 -> 35,12,2,15,3,41
-#Dia 5 -> 14,10,13,33,25,1
-
-
-Dia 1 -> 18,7,29,33,16,9,70
-Dia 2 -> 31,21,25,28,33,24,17,70
-Dia 3 -> 10,5,35,6,4,70
-Dia 4 -> 14,15,36,12,2,70
-Dia 5 -> 13,22,23,33,26,30,1
-
-or = [18,7,29,33,16,9,70,31,21,25,28,33,24,17,70, 10,5,35,6,4,70,14,15,36,12,2,70,13,22,23,33,26,30,1]
-s=0
-k=0
-for i in 1:length(or)
-    if or[i] <=31 && or[i] > 1
-        s = s + P[i,or[i]]/Pmax[or[i]]
-        k=k+1
-    end
-end
-100*s/k
-=#
